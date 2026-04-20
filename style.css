@@ -23,16 +23,22 @@
     background: rgb(205, 203, 218);
     display: grid;
     place-items: center;
-    .img-wrapper{
+
+    .img-wrapper {
         /* background: rgba(0, 2, 128, 0.29); */
         padding: 1rem;
         border-radius: .5em;
-        img{
+
+        .puzzle {
             width: 100%;
-            border-radius: .5em;
-            object-fit: cover;
+
+            display: grid;
+            grid-template-columns: repeat(5, 8fr);
+            grid-template-rows: repeat(4, 6fr);
+            position: relative;
         }
     }
+
     /* place-items: eneter; */
     position: relative;
 }
@@ -42,14 +48,16 @@
     background: rgb(122, 139, 148);
     overflow-x: scroll;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: .2em;
 
     div {
-        background: #000;
-        min-height: 100px;
+        background: #0000003e;
+        aspect-ratio: 16/9;
         cursor: grab;
-        &:active{
+        background-image: url("img/profile\ pic1.png");
+        background-size: 500%;
+        &:active {
             cursor: grabbing;
         }
     }
