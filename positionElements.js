@@ -3,12 +3,25 @@ import Elements from './Elements.js';
 class PositionElements {
   constructor() {
     this.element = new Elements();
-    this.leftPositions = [0, 20, 40, 60, 80];
-    this.topPositions = [0, 25, 50, 75];
+    const { cellAmounts } = this.element
+    this.cellAmounts = cellAmounts
+    this.backgroundSize = Math.sqrt(cellAmounts) * 100
+    console.log(this.backgroundSize);
+
+
+    this.imgUrl = "img/ruka.jpeg";
+    // this.imgUrl = "img/profilepic.png";
+    this.element.preview.src = this.imgUrl
+    this.imgeWidth = this.element.preview.naturalWidth
+    this.imgeHeight = this.element.preview.naturalHeight
+
+    this.leftPositions = Array.from({ length: Math.sqrt(cellAmounts) }, (_, i) => i * 100);
+    this.topPositions = Array.from({ length: Math.sqrt(cellAmounts) }, (_, i) => i * 100);
+
+    this.elementProps()
     this.addDragable();
-    this.imgUrl = 'img/profile pic1.png';
     console.log(this.imgUrl);
-    
+
   }
   shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
@@ -21,6 +34,7 @@ class PositionElements {
       )).reduce((position, item) => [...position, ...item])
     )
   }
+
   bgPositions() {
     return (
       this.topPositions.map((topPosition) => (
@@ -55,26 +69,41 @@ class PositionElements {
   // }
 
   async addDragable() {
-    const { cells, dragableDivs, preview, changeImg } = this.element
+    const { cells, dragableDivs, preview, changeImg, puzzle } = this.element
+    console.log(puzzle);
+
     const bgPositions = this.bgPositions()
+
     const shufflePositions = this.shufflePositions()
+    console.log(shufflePositions);
 
-    await this.randomImg();
-
-    preview.src = this.imgUrl
+    // await this.randomImg();
 
     dragableDivs.forEach((div, i) => {
       cells.append(div)
-      div.style.backgroundImage = `url(${this.imgUrl})`
-      div.style.backgroundPosition = `-${50}% -${50}%`
-      div.style.backgroundPosition = `-${bgPositions[i][1]}% -${bgPositions[i][0]}%`
-      
+      div.style.backgroundImage = ` url(${this.imgUrl})`
+      div.style.backgroundPosition = `-${shufflePositions[i][1]}% -${shufflePositions[i][0]}%`;
+      div.style.backgroundSize = this.backgroundSize + '%';
+      div.style.aspectRatio =  this.imgeWidth / this.imgeHeight;
     })
     console.log(cells);
 
     // changeImg.addEventListener('click', () => {
     //   location.reload();
     // })
+
+  }
+
+  elementProps() {
+
+    const { puzzle } = this.element
+    puzzle.style.aspectRatio = this.imgeWidth / this.imgeHeight;
+    const size = Math.sqrt(this.cellAmounts)
+
+    puzzle.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    puzzle.style.gridTemplateRows = `repeat(${size}, 1fr)`;
+
+
 
   }
 

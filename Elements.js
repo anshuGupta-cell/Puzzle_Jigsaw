@@ -4,12 +4,14 @@ class Elements {
 
     this.puzzle = document.querySelector('.puzzle');
     this.cells = document.querySelector('.pieces')
-    this.cellAmounts = 20;
+    this.cellAmounts = this.getCellAmounts();
+    
     this.puzzleDivs = [];
     this.dragableDivs = [];
     this.preview = document.querySelector('.preview');
     this.changeImg = document.querySelector('.change-img');
     this.createElements();
+    
   }
   createElements() {
     for (let i = 0; i < this.cellAmounts; i++) {
@@ -25,6 +27,14 @@ class Elements {
       
     }
   }
+
+  getCellAmounts(){
+    const cells = [4, 9, 16, 25, 36]
+    return cells[Math.floor(Math.random() * 4)]
+
+  }
+
+  
 
 }
 

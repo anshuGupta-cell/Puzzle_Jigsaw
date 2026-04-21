@@ -16,7 +16,7 @@ class DragDrop {
   }
 
   dragDropEvents() {
-    const { dragableDivs, puzzleDivs, cells, modal, newGame, cAttempt, wAttempt, cellAmounts, winState, wonImg } = this.positionElements.element;
+    const { dragableDivs, puzzleDivs, cells, cellAmounts } = this.positionElements.element;
 
     dragableDivs.forEach((dragableDiv, i) => {
       dragableDiv.addEventListener('touchstart', (e) => {
@@ -68,18 +68,18 @@ class DragDrop {
           } else {
             this.points.wrong++;
           }
-          
-//      win lose.  
-          if (this.points.correct === cellAmounts) {
-            modal.style.cssText = "opacity: 1; visibility: visible;";
-            cAttempt.innerText = this.points.correct;
-            wAttempt.innerText = this.points.wrong;
-            winState.innerText = 'You Win';
-            wonImg.src = 'svg/trophy.png';
-            newGame.addEventListener('click', () => {
-              location.reload();
-            });
-          }
+
+          //      win lose.  
+          // if (this.points.correct === cellAmounts) {
+          //   modal.style.cssText = "opacity: 1; visibility: visible;";
+          //   cAttempt.innerText = this.points.correct;
+          //   wAttempt.innerText = this.points.wrong;
+          //   winState.innerText = 'You Win';
+          //   wonImg.src = 'svg/trophy.png';
+          //   newGame.addEventListener('click', () => {
+          //     location.reload();
+          //   });
+          // }
           const found = puzzleDivs.find((div) => {
             return !div.firstElementChild
           })
@@ -106,7 +106,20 @@ class DragDrop {
         this.selected = null;
 
       });
+
+
+      // dragableDiv.addEventListener("mouse")
     });
+  }
+
+  start(e){
+
+  }
+  move(e){
+
+  }
+  end(e){
+
   }
 }
 
