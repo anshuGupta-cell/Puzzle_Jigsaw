@@ -22,7 +22,7 @@ class Elements {
       
       const dragableDiv = document.createElement('div')
       dragableDiv.setAttribute('data-index',i)
-      dragableDiv.setAttribute('dragable',true)
+      dragableDiv.setAttribute('draggable', 'true');
       this.dragableDivs.push(dragableDiv)
       
     }

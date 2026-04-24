@@ -26,8 +26,12 @@ body {
   
   bottom: 20px;
   right: 20px;
-  z-index: 1000;
   transition: transform 0.1s ease-out;
+}
+.preview{
+  -webkit-user-drag: none;
+  user-select: none;
+  /* display: none; */
 }
 
 .floating-card.dragging {

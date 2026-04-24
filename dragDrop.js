@@ -4,122 +4,132 @@ class DragDrop {
   constructor() {
     this.positionElements = new PositionElements();
     this.selected = null;
-    this.offset = { x: 0, y: 0 };
-    this.dragableLeft;
-    this.dragableTop;
-    this.dragDropEvents();
-    this.points = {
-      correct: 0,
-      wrong: 0
-    };
-    this.count = 0
+    this.initialPos = { x: 0, y: 0 };
+    this.points = { correct: 0, wrong: 0 };
+    this.initEvents();
   }
 
-  dragDropEvents() {
-    const { dragableDivs, puzzleDivs, cells, cellAmounts } = this.positionElements.element;
+  initEvents() {
+    const { dragableDivs, puzzleDivs, pieces } = this.positionElements.element;
 
-    dragableDivs.forEach((dragableDiv, i) => {
-      dragableDiv.addEventListener('touchstart', (e) => {
+    // Draggable Pieces
+    dragableDivs.forEach((el) => {
+      el.addEventListener('dragstart', (e) => this.handleNativeStart(e));
+      el.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: false });
+    });
 
-        this.dragableLeft = dragableDiv.style.left;
-        this.dragableTop = dragableDiv.style.top
-
-        this.selected = e.target;
-        const rect = cells.getBoundingClientRect();
-
-        this.offset = {
-          x: rect.left,
-          y: rect.top
-        };
-        this.selected.style.zIndex = '4';
-      });
-
-      dragableDiv.addEventListener('touchmove', (e) => {
-
-        e.preventDefault();
-        const touch = e.touches[0];
-
-        this.selected.style.left = `${touch.pageX - this.offset.x}px`;
-        this.selected.style.top = `${touch.pageY - this.offset.y}px`;
-
-      });
-
-      dragableDiv.addEventListener('touchend', (e) => {
-        const touch = e.changedTouches[0];
-        const droppedAt = document.elementFromPoint(touch.pageX, touch.pageY);
-
-        if (puzzleDivs.includes(droppedAt) && droppedAt.children.length === 0) {
-
-          const dropRect = droppedAt.getBoundingClientRect()
-          const selectedRect = this.selected.getBoundingClientRect()
-
-          this.selected.style.left = `${dropRect.left - cells.offsetLeft}px`;
-          this.selected.style.top = `${dropRect.top - cells.offsetTop}px`;
-          this.selected.style.border = 'none';
-          droppedAt.appendChild(this.selected)
-          //points section 
-          if (this.selected.dataset.index === droppedAt.dataset.index) {
-            this.points.correct = 0;
-            puzzleDivs.forEach((div) => {
-              if (div.firstElementChild && div.dataset.index === div.firstElementChild.dataset.index) {
-                this.points.correct++;
-              }
-            })
-          } else {
-            this.points.wrong++;
-          }
-
-          //      win lose.  
-          // if (this.points.correct === cellAmounts) {
-          //   modal.style.cssText = "opacity: 1; visibility: visible;";
-          //   cAttempt.innerText = this.points.correct;
-          //   wAttempt.innerText = this.points.wrong;
-          //   winState.innerText = 'You Win';
-          //   wonImg.src = 'svg/trophy.png';
-          //   newGame.addEventListener('click', () => {
-          //     location.reload();
-          //   });
-          // }
-          const found = puzzleDivs.find((div) => {
-            return !div.firstElementChild
-          })
-          if (!found && this.points.correct < cellAmounts) {
-            modal.style.cssText = "opacity: 1; visibility: visible;";
-            cAttempt.innerText = this.points.correct;
-            wAttempt.innerText = this.points.wrong;
-            winState.innerText = 'You Lost';
-            wonImg.src = '';
-            newGame.innerText = 'New Game';
-            newGame.addEventListener('click', () => {
-              location.reload();
-            });
-          }
-
-        } else {
-          //return to previous place
-          console.log('no')
-          this.selected.style.left = `${this.dragableLeft}`;
-          this.selected.style.top = `${this.dragableTop}`
-        }
-
-        this.selected.style.zIndex = '';
-        this.selected = null;
-
-      });
-
-
-      // dragableDiv.addEventListener("mouse")
+    // Drop Zones (Puzzle Cells AND Pieces Tray for swapping back)
+    [...puzzleDivs, pieces].forEach((zone) => {
+      zone.addEventListener('dragover', (e) => e.preventDefault());
+      zone.addEventListener('drop', (e) => this.handleNativeDrop(e));
     });
   }
 
-  start(e){
-
+  handleNativeStart(e) {
+    this.selected = e.currentTarget;
+    e.dataTransfer.setData('text/plain', ''); 
   }
-  move(e){
 
+  handleNativeDrop(e) {
+    e.preventDefault();
+    // Logic: If we drop on the image inside the cell, get the cell (parent) instead
+    let target = e.currentTarget;
+    this.finalizeMove(target);
   }
-  end(e){
 
+  handleTouchStart(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    this.selected = e.currentTarget;
+    
+    // Get current offset for smooth dragging
+    const rect = this.selected.getBoundingClientRect();
+    this.offset = {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top
+    };
+
+    this.selected.style.zIndex = '1000';
+    // this.selected.style.position = 'fixed'; // Use fixed during drag to ignore scroll
+
+    this.moveHandler = (me) => this.handleTouchMove(me);
+    this.endHandler = (ee) => this.handleTouchEnd(ee);
+
+    window.addEventListener('touchmove', this.moveHandler, { passive: false });
+    window.addEventListener('touchend', this.endHandler);
+  }
+
+  handleTouchMove(e) {
+    if (!this.selected) return;
+    const touch = e.touches[0];
+    // Move piece relative to viewport
+    this.selected.style.left = `${touch.clientX - this.offset.x}px`;
+    this.selected.style.top = `${touch.clientY - this.offset.y}px`;
+  }
+
+  handleTouchEnd(e) {
+    const touch = e.changedTouches[0];
+    this.selected.style.display = 'none'; // Temporarily hide to find what's underneath
+    const droppedAt = document.elementFromPoint(touch.clientX, touch.clientY);
+    this.selected.style.display = 'block';
+
+    const { puzzleDivs, pieces } = this.positionElements.element;
+    
+    // Find if the drop target is a puzzle cell or the pieces tray
+    const targetCell = [...puzzleDivs, pieces].find(zone => zone.contains(droppedAt));
+
+    if (targetCell) {
+      this.finalizeMove(targetCell);
+    } else {
+      // Return to tray if dropped in dead space
+      pieces.appendChild(this.selected);
+      this.resetPieceStyles(this.selected);
+    }
+
+    window.removeEventListener('touchmove', this.moveHandler);
+    window.removeEventListener('touchend', this.endHandler);
+    this.selected = null;
+  }
+
+  finalizeMove(dropZone) {
+    const { pieces } = this.positionElements.element;
+
+    // --- SWAP LOGIC ---
+    if (dropZone.children.length > 0 && dropZone !== pieces) {
+      // If dropping on a cell that has a piece, move existing piece to tray
+      const existingPiece = dropZone.firstElementChild;
+      pieces.appendChild(existingPiece);
+      this.resetPieceStyles(existingPiece);
+    }
+
+    // Append new piece
+    dropZone.appendChild(this.selected);
+    this.resetPieceStyles(this.selected);
+    
+    this.checkLogic();
+  }
+
+  resetPieceStyles(el) {
+    el.style.position = 'relative';
+    el.style.left = '0';
+    el.style.top = '0';
+    el.style.zIndex = '';
+  }
+
+  checkLogic() {
+    const { puzzleDivs, cellAmounts } = this.positionElements.element;
+    this.points.correct = 0;
+
+    puzzleDivs.forEach((div) => {
+      const child = div.firstElementChild;
+      if (child && div.dataset.index === child.dataset.index) {
+        this.points.correct++;
+      }
+    });
+
+    if (this.points.correct === parseInt(cellAmounts)) {
+      alert("Puzzle Complete!");
+    }
   }
 }
 
