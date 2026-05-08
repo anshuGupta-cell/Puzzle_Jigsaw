@@ -9,8 +9,8 @@ class PositionElements {
     console.log(this.backgroundSize);
 
 
-    this.imgUrl = "img/ruka.jpeg";
-    // this.imgUrl = "img/profilepic.png";
+    // this.imgUrl = "img/ruka.jpeg";
+    this.imgUrl = "img/profilepic.png";
     this.element.preview.src = this.imgUrl
     this.imgeWidth = this.element.preview.naturalWidth
     this.imgeHeight = this.element.preview.naturalHeight
