@@ -6,7 +6,6 @@ class PositionElements {
     const { cellAmounts } = this.element
     this.cellAmounts = cellAmounts
     this.backgroundSize = Math.sqrt(cellAmounts) * 100
-    console.log(this.backgroundSize);
 
 
     // this.imgUrl = "img/ruka.jpeg";
@@ -20,7 +19,6 @@ class PositionElements {
 
     this.elementProps()
     this.addDragable();
-    console.log(this.imgUrl);
 
   }
   shuffle(array) {
@@ -47,7 +45,6 @@ class PositionElements {
     try {
       const URL = 'https://picsum.photos/1080/1920';
       const response = await fetch(URL);
-      console.log(response)
       const blob = await response.blob();
       this.imgUrl = window.URL.createObjectURL(blob);
 
@@ -70,12 +67,10 @@ class PositionElements {
 
   async addDragable() {
     const { cells, dragableDivs, preview, changeImg, puzzle } = this.element
-    console.log(puzzle);
 
     const bgPositions = this.bgPositions()
 
     const shufflePositions = this.shufflePositions()
-    console.log(shufflePositions);
 
     // await this.randomImg();
 
@@ -83,10 +78,11 @@ class PositionElements {
       cells.append(div)
       div.style.backgroundImage = ` url(${this.imgUrl})`
       div.style.backgroundPosition = `-${shufflePositions[i][1]}% -${shufflePositions[i][0]}%`;
+      div.setAttribute('data-index', Math.sqrt(this.cellAmounts) * (shufflePositions[i][0]/100) + (shufflePositions[i][1]/100))
+      
       div.style.backgroundSize = this.backgroundSize + '%';
-      div.style.aspectRatio =  this.imgeWidth / this.imgeHeight;
+      div.style.aspectRatio = this.imgeWidth / this.imgeHeight;
     })
-    console.log(cells);
 
     // changeImg.addEventListener('click', () => {
     //   location.reload();

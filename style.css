@@ -110,3 +110,58 @@ html {
 		/* Keeps items at the top */
 	}
 }
+
+
+/*       modal.      */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: #00000047;
+  display: grid;
+  place-items: center;
+  /* opacity: 0; */
+  /* visibility: hidden; */
+  transition: opacity 0.5s;
+  z-index: 1000;
+}
+.hidden{
+	display: none;
+}
+.btn {
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 1rem;
+  background: #A47FFF;
+  color: #2D00A7;
+  cursor: pointer;
+}
+
+.btn:hover {
+  outline: 1px solid #2D00A7;
+}
+
+.gameOver div {
+  width: 100%;
+  text-align: center;
+
+}
+
+.wonImg {
+  width: 4rem;
+  /* height: 3rem; */
+  object-fit: cover;
+}
+
+.gameOver {
+  background: #EDF1FF;
+  width: 15rem;
+  height: 14rem;
+  padding: 1rem 0;
+  opacity: 1;
+  border-radius: 1rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  box-shadow: 0 7px 7px rgba(0, 0, 0, 0.5);
+}

@@ -10,6 +10,13 @@ class Elements {
     this.dragableDivs = [];
     this.preview = document.querySelector('.preview');
     this.changeImg = document.querySelector('.change-img');
+
+    this.modal = document.querySelector('.modal')
+    this.newGame = document.querySelector('.newGame');
+    this.cAttempt = document.querySelector('.cAtm')
+    this.wAttempt = document.querySelector('.wAtm');
+    this.winState = document.querySelector('.win-state');
+    this.wonImg = document.querySelector('.wonImg')
     this.createElements();
     
   }
