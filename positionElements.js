@@ -8,21 +8,23 @@ class PositionElements {
     this.backgroundSize = Math.sqrt(cellAmounts) * 100
 
 
-    // this.imgUrl = "img/ruka.jpeg";
-    this.imgUrl = "img/profilepic.png";
-    this.element.preview.src = this.imgUrl
-    this.imgeWidth = this.element.preview.naturalWidth
-    this.imgeHeight = this.element.preview.naturalHeight
-
+    this.imgUrl = "img/ruka.jpeg";
+    // this.imgUrl = "img/profilepic.png";
     this.leftPositions = Array.from({ length: Math.sqrt(cellAmounts) }, (_, i) => i * 100);
     this.topPositions = Array.from({ length: Math.sqrt(cellAmounts) }, (_, i) => i * 100);
 
-    this.elementProps()
-    this.addDragable();
+    this.element.preview.src = this.imgUrl
+    this.element.preview.onload = () => {
+      this.imgeWidth = this.element.preview.naturalWidth
+      this.imgeHeight = this.element.preview.naturalHeight
+      this.elementProps()
+      this.addDragable();
+    }
+
 
   }
   shuffle(array) {
-    return array.sort(() => Math.random() - 0.5);
+    return [...array].sort(() => Math.random() - 0.5);
   }
 
   shufflePositions() {
@@ -78,8 +80,8 @@ class PositionElements {
       cells.append(div)
       div.style.backgroundImage = ` url(${this.imgUrl})`
       div.style.backgroundPosition = `-${shufflePositions[i][1]}% -${shufflePositions[i][0]}%`;
-      div.setAttribute('data-index', Math.sqrt(this.cellAmounts) * (shufflePositions[i][0]/100) + (shufflePositions[i][1]/100))
-      
+      div.setAttribute('data-index', Math.sqrt(this.cellAmounts) * (shufflePositions[i][0] / 100) + (shufflePositions[i][1] / 100))
+
       div.style.backgroundSize = this.backgroundSize + '%';
       div.style.aspectRatio = this.imgeWidth / this.imgeHeight;
     })
