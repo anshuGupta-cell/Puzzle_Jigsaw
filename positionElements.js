@@ -1,28 +1,32 @@
 import Elements from './Elements.js';
+import Image from './Image.js';
 
 class PositionElements {
   constructor() {
     this.element = new Elements();
     const { cellAmounts } = this.element
     this.cellAmounts = cellAmounts
-    this.backgroundSize = Math.sqrt(cellAmounts) * 100
+    this.backgroundSize = Math.sqrt(cellAmounts) * 100;
 
-
-    this.imgUrl = "img/ruka.jpeg";
-    // this.imgUrl = "img/profilepic.png";
     this.leftPositions = Array.from({ length: Math.sqrt(cellAmounts) }, (_, i) => i * 100);
     this.topPositions = Array.from({ length: Math.sqrt(cellAmounts) }, (_, i) => i * 100);
 
-    this.element.preview.src = this.imgUrl
+    this.init()
+
+  }
+  async init() {
+    this.imgUrl = await new Image().getImage();
+
+    this.element.preview.src = this.imgUrl;
+
     this.element.preview.onload = () => {
       this.imgeWidth = this.element.preview.naturalWidth
       this.imgeHeight = this.element.preview.naturalHeight
       this.elementProps()
       this.addDragable();
     }
-
-
   }
+
   shuffle(array) {
     return [...array].sort(() => Math.random() - 0.5);
   }
