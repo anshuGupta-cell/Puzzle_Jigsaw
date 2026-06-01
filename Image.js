@@ -4,7 +4,7 @@ class Image {
     }
     async getImage() {
         try {
-            const URL = 'https://picsum.photos/1080/1920';
+            const URL = 'https://picsum.photos/1920/1080';
             const response = await fetch(URL);
             const blob = await response.blob();
             // this.imgUrl = 
