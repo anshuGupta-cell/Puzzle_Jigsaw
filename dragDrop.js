@@ -13,7 +13,7 @@ class DragDrop {
   }
 
   dragDropEvents() {
-    const { dragableDivs, puzzleDivs, pieces } = this.positionElements.element;
+    const { dragableDivs, puzzleDivs, cells } = this.positionElements.element;
 
     dragableDivs.forEach((dragableDiv) => {
 
@@ -28,7 +28,7 @@ class DragDrop {
     });
 
     // Drop Zones (Puzzle Cells AND Pieces Tray for swapping back)
-    [...puzzleDivs, pieces].forEach((zone) => {
+    [...puzzleDivs, cells].forEach((zone) => {
       zone.addEventListener('dragover', (e) => e.preventDefault());
       zone.addEventListener('drop', (e) => this.handleNativeDrop(e, puzzleDivs));
     });
@@ -115,13 +115,13 @@ class DragDrop {
   }
 
   finalizeMove(dropZone, puzzleDivs) {
-    const { pieces } = this.positionElements.element;
+    const { cells } = this.positionElements.element;
 
     // --- SWAP LOGIC ---
-    if (dropZone.children.length > 0 && dropZone !== pieces) {
+    if (dropZone.children.length > 0 && dropZone !== cells) {
       // If dropping on a cell that has a piece, move existing piece to tray
       const existingPiece = dropZone.firstElementChild;
-      pieces.appendChild(existingPiece);
+      cells.appendChild(existingPiece);
       this.resetPieceStyles(existingPiece);
     }
 
